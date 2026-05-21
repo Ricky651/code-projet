@@ -3,7 +3,7 @@
 
 #define DHTPIN 2
 #define DHTTYPE DHT11
-#define BATTERY_PIN A1
+#define BATTERY_PIN A6
 
 DHT dht(DHTPIN, DHTTYPE);
 LoRaModem modem;
@@ -22,19 +22,10 @@ void setup() {
 
   if (!modem.begin(EU868)) {
     Serial.println("Failed to start module");
-    while (1) {}
+    while (1);
   }
 
-  Serial.println(modem.version());
-  Serial.println(modem.deviceEUI());
-
-  int connected = modem.joinOTAA(appEui, appKey);
-
-  if (!connected) {
-    Serial.println("Connection failed");
-    while (1) {}
-  }
-
+  modem.joinOTAA(appEui, appKey);
   modem.minPollInterval(120);
 }
 
@@ -44,9 +35,7 @@ void loop() {
   float humidity = dht.readHumidity();
 
   int sensorValue = analogRead(BATTERY_PIN);
-
-  float batteryVoltage = sensorValue * (3.3 / 1023.0);
-  batteryVoltage = batteryVoltage * 2;
+  float batteryVoltage = sensorValue * (3.3 / 1023.0) * 2.0;
 
   Serial.print("Temperature: ");
   Serial.println(temperature);
@@ -57,15 +46,18 @@ void loop() {
   Serial.print("Battery: ");
   Serial.println(batteryVoltage);
 
-  byte payload[3];
+  int temp = (int)temperature;
+  int hum  = (int)humidity;
+  int batt = (int)(batteryVoltage * 100);
 
-  payload[0] = (int)temperature;
-  payload[1] = (int)humidity;
-  payload[2] = (int)batteryVoltage;
+  byte payload[3];
+  payload[0] = temp;
+  payload[1] = hum;
+  payload[2] = batt;
 
   modem.beginPacket();
   modem.write(payload, 3);
   modem.endPacket(true);
 
-  delay(120000);
+  delay(1000);
 }
