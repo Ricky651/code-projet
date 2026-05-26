@@ -1,0 +1,11 @@
+function decodeUplink(input) {
+  var data = input.bytes;
+
+  return {
+    data: {
+      temperature: data[0],
+      humidity: data[1],
+      batteryVoltage: data[2] / 100.0
+    }
+  };
+}
