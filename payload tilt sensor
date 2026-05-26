@@ -1,0 +1,16 @@
+function decodeUplink(input) {
+  var data = input.bytes;
+
+  var roulis = (data[2] << 8) | data[3];
+  if (roulis > 32767) { roulis = roulis - 65536; }
+
+  var tangage = (data[4] << 8) | data[5];
+  if (tangage > 32767) { tangage = tangage - 65536; }
+
+  return {
+    data: {
+      roulis: roulis / 100.0,
+      tangage: tangage / 100.0
+    }
+  };
+}
