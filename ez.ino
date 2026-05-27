@@ -59,5 +59,5 @@ void loop() {
   modem.write(payload, 3);
   modem.endPacket(true);
 
-  delay(50000);
+  delay(12000);
 }
