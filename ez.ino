@@ -3,7 +3,7 @@
 
 #define DHTPIN 2
 #define DHTTYPE DHT11
-#define BATTERY_PIN A6
+#define BATTERY_PIN A1
 
 DHT dht(DHTPIN, DHTTYPE);
 LoRaModem modem;
